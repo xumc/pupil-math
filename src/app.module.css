@@ -1,0 +1,91 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #282c34;
+}
+
+.container {
+  width: 400px;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.cell {
+  width: 37px;
+  height: 37px;
+  border: 1px solid #ccc;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  margin: 0 auto;
+  ;
+}
+
+.equation {
+  background-color: #9d8a8a;
+  padding: 10px;
+  min-height: 40px;
+  align-items: center;
+  text-align: left;
+}
+
+.message {
+  background-color: yellow;
+  margin-top: 10px;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: medium;
+}
+
+.operation {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.operation>button {
+  margin-right: 10px;
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.help-content {
+  line-height: 1px;
+  text-align: left;
+}
+
+.help-content h5 {
+  color: blue;
+}
+
+.help-content p {
+  font-size: small;
+}
