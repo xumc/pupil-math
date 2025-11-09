@@ -96,7 +96,6 @@ const App = () => {
     e.preventDefault();
     if (isDragging) {
       setCurrentPos({ row, col });
-      console.log(row, col);
     }
   };
 
@@ -197,6 +196,32 @@ const App = () => {
     return;
   }
 
+  // 在App组件中添加触摸事件处理
+  const handleTouchStart = (row: number, col: number, e: React.TouchEvent) => {
+    e.preventDefault();
+    handleDragStart(row, col);
+  };
+
+  const handleTouchMove = (row: number, col: number, e: React.TouchEvent) => {
+    e.preventDefault();
+    // 转换触摸坐标到表格单元格
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement;
+    // 这里需要根据实际DOM结构调整获取行和列的逻辑
+    if (target && target.tagName === 'TD') {
+      // 假设可以从父元素获取行列信息
+      const tr = target.closest('tr');
+      const rowIdx = Array.from(tr!.parentNode!.children).indexOf(tr!);
+      const colIdx = Array.from(tr!.children).indexOf(target);
+      handleDragOver(rowIdx, colIdx, e as unknown as React.MouseEvent);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    handleDragEnd();
+  };
+
   return (
     <div className={styles.App}>
       { showHelp && <Help setShowHelp={setShowHelp} />}
@@ -248,6 +273,9 @@ const App = () => {
                 onMouseDown={() => handleDragStart(rowIdx, colIdx)}
                 onMouseMove={(e) => handleDragOver(rowIdx, colIdx, e)}
                 onMouseUp={handleDragEnd}
+                onTouchStart={(e) => handleTouchStart(rowIdx, colIdx, e)}
+                onTouchMove={(e) => handleTouchMove(rowIdx, colIdx, e)}
+                onTouchEnd={handleTouchEnd}
               >
                 {cellStatus === 'selected' && '🍎'}
                 {cellStatus === 'excluded' && '✗'}
