@@ -37,6 +37,18 @@ table {
   text-align: left;
 }
 
+.answer {
+  margin-top: 10px;
+  padding: 5px;
+  align-items: center;
+  text-align: left; 
+}
+
+.answer-input {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .message {
   background-color: yellow;
   margin-top: 10px;
@@ -46,7 +58,7 @@ table {
 }
 
 .operation {
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 30px;
   display: flex;
   justify-content: flex-start;

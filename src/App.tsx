@@ -1,13 +1,19 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './app.module.css';
 
 const TIMEOUT_DURATION = 3000;
 // 定义单元格状态类型
 type CellStatus = 'unselected' | 'selected' | 'excluded';
 
-const Help = (props: {toggleShowHelp: () => void}) => {
-  const {toggleShowHelp} = props;
+const Help = (props: {
+  setShowHelp: (show: boolean) => void,
+}) => {
+  const {setShowHelp} = props;
 
+  const onClickAcknowledge = () => {
+    setShowHelp(false);
+    document.cookie = `showHelp=false; path=/; max-age=31536000`; // 保存1年
+  };
 
   return (
     <div className={styles['dialog-overlay']}>
@@ -25,7 +31,7 @@ const Help = (props: {toggleShowHelp: () => void}) => {
           <p>观察上方的算式，尝试算出答案，然后可以点击"重置"开始新的练习。</p>
           <br />
           <br />
-          <button onClick={toggleShowHelp}>我知道了</button>
+          <button onClick={onClickAcknowledge}>我知道了</button>
         </div>
       </div>
     </div>
@@ -45,7 +51,23 @@ const App = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState<{ row: number; col: number } | null>(null);
   const [currentPos, setCurrentPos] = useState<{ row: number; col: number } | null>(null);
+  const [answer, setAnswer] = useState<string>('');
+
   const dragRef = useRef(false);
+
+    // 从cookie读取showHelp状态
+  useEffect(() => {
+    const showHelp = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('showHelp='))
+      ?.split('=')[1];
+      
+    if (showHelp == 'true' || showHelp == undefined) {
+      setShowHelp(true);
+    } else {
+      setShowHelp(false);
+    }
+  }, []);
 
   // 新的状态切换函数：已选中点击后直接变为未选中，其他状态按原逻辑
   const toggleCellStatus = (status: CellStatus): CellStatus => {
@@ -137,9 +159,9 @@ const App = () => {
         const sign = includeCount > 0 ? ' + ' : ' - ';
 
         if (prev == '') {
-          return area;
+          return area + ' = ';
         } else {
-          return prev + sign + area;
+          return prev.replace(' = ', '') + sign + area + ' = ';
         }
       });
     }
@@ -152,20 +174,50 @@ const App = () => {
   const handleReset = () => {
     setGrid(initialGrid);
     setEquation('');
+    setAnswer('');
   }
 
   const toggleShowHelp = () => {
     setShowHelp(!showHelp);
   }
+  const onCheckAnswer = () => {
+    const selectedCount = grid.reduce((total, row) => {
+      // 累加当前行中选中的单元格数量
+      const rowCount = row.reduce((count, cell) => {
+        return count + (cell === 'selected' ? 1 : 0);
+      }, 0);
+      return total + rowCount;
+    }, 0);
+
+    if (selectedCount.toString() != answer) {
+      alert('你的答案不对奥');
+    } else {
+      alert('恭喜你，答对了');
+    }
+    return;
+  }
 
   return (
     <div className={styles.App}>
-      { showHelp && <Help toggleShowHelp={toggleShowHelp} />}
+      { showHelp && <Help setShowHelp={setShowHelp} />}
       <div className={styles.container}>
-      <h1>小学生计算器</h1>
+      <h3>小学生计算器</h3>
       <div className={styles.equation}>
         {equation}
       </div>
+      { equation.indexOf(' = ') != -1 && <div className={styles.answer}>
+        <label>你的答案是：</label>
+        <input
+          type="number"
+          className={styles['answer-input']}
+          placeholder='输入你的答案'
+          min={0}
+          max={100}
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
+        />
+        <button onClick={onCheckAnswer}>我的答案对吗？</button>
+      </div>}
       { message != '' && <div className={styles.message}>
         {message}
       </div>}
