@@ -202,7 +202,7 @@ const App = () => {
     handleDragStart(row, col);
   };
 
-  const handleTouchMove = (row: number, col: number, e: React.TouchEvent) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
     e.preventDefault();
     // 转换触摸坐标到表格单元格
     const touch = e.touches[0];
@@ -274,7 +274,7 @@ const App = () => {
                 onMouseMove={(e) => handleDragOver(rowIdx, colIdx, e)}
                 onMouseUp={handleDragEnd}
                 onTouchStart={(e) => handleTouchStart(rowIdx, colIdx, e)}
-                onTouchMove={(e) => handleTouchMove(rowIdx, colIdx, e)}
+                onTouchMove={(e) => handleTouchMove(e)}
                 onTouchEnd={handleTouchEnd}
               >
                 {cellStatus === 'selected' && '🍎'}
